@@ -52,8 +52,9 @@ function getMimeType(fileName: string) {
   }
 }
 
-export default function qiniuPlugin(options: Options): PluginOption {
+export default function qiniuHtmlPlugin(options: Options): PluginOption {
   // NOTE: 覆盖上传 index.html 并刷新缓存，前提已上传其他静态文件
+  console.log('覆盖上传 index.html 并刷新缓存，前提已上传其他静态文件')
   const {
     accessKey,
     secretKey,
