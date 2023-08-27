@@ -66,7 +66,7 @@ export default function qiniuPlugin(options: Options): PluginOption {
     log = true,
   } = options
   const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
-  const putPolicy = new qiniu.rs.PutPolicy({ scope: bucket })
+  const putPolicy = new qiniu.rs.PutPolicy({ scope: `${bucket}:index.html` })
   const uploadToken = putPolicy.uploadToken(mac)
   const config = new qiniu.conf.Config()
   const cdnManager = new qiniu.cdn.CdnManager(mac);
@@ -79,7 +79,7 @@ export default function qiniuPlugin(options: Options): PluginOption {
   const logger = print(log)
 
   return {
-    name: 'vite-plugin-qiniu-upload',
+    name: 'vite-plugin-qiniu-upload-html',
     async writeBundle() {
       const files = await globby([`${distDir}/**/*`])
       const chunkedFiles = _.chunk(files, concurrent)
