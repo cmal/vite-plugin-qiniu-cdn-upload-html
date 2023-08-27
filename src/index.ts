@@ -153,7 +153,7 @@ export default function qiniuHtmlPlugin(options: Options): PluginOption {
                   if (respInfo.statusCode == 200) {
                     logger(respInfo)
                     logger('Prefetching... ' + indexHtmlUrl)
-                    dnManager.prefetchUrls([indexHtmlUrl], (err, respBody, respInfo) => {
+                    cdnManager.prefetchUrls([indexHtmlUrl], (err, respBody, respInfo) => {
                       if (err) {
                         logger(err)
                         throw err
