@@ -1,7 +1,7 @@
 {
-    "name": "@zyzy5730_gmail/vite-plugin-qiniu-cdn-upload",
+    "name": "@zyzy5730_gmail/vite-plugin-qiniu-cdn-upload-html",
     "version": "1.1.7",
-    "description": "基于 vite 的打包文件上传到七牛云的插件",
+    "description": "基于 vite 的打包 index.html 文件上传到七牛云的插件",
     "author": "ryan-liu",
     "main": "dist/index.js",
     "module": "dist/index.mjs",

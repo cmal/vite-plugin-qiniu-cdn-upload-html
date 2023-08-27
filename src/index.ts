@@ -7,7 +7,7 @@ export interface Options {
   accessKey: string
   secretKey: string
   bucket: string
-  exclude?: RegExp
+  include?: RegExp
   /** 七牛云区域 */
   zone?: string
   /** 并发数 */
@@ -18,6 +18,7 @@ export interface Options {
   distDir?: string
   /** 是否输出日志 */
   log?: boolean
+  hostname?: string
 }
 
 enum StatusCode {
@@ -52,12 +53,12 @@ function getMimeType(fileName: string) {
 }
 
 export default function qiniuPlugin(options: Options): PluginOption {
-  // NOTE: 不能执行覆盖上传
+  // NOTE: 覆盖上传 index.html 并刷新缓存，前提已上传其他静态文件
   const {
     accessKey,
     secretKey,
     bucket,
-    exclude = /(\.map|\.html)$/,
+    include = /(index.html)$/,
     zone = 'z0',
     concurrent = 10,
     prefix = '',
@@ -86,7 +87,7 @@ export default function qiniuPlugin(options: Options): PluginOption {
         chunkedFiles.map((chunk) => {
           return new Promise((resolve, reject) => {
             const promises = chunk.map((file) => {
-              if (exclude.test(file)) {
+              if (!include.test(file)) {
                 logger(`文件被排除${file}`)
                 return Promise.resolve()
               }
@@ -140,7 +141,19 @@ export default function qiniuPlugin(options: Options): PluginOption {
             Promise.all(promises)
               .then((res) => {
                 logger(`上传成功${res.length}个文件`)
-                resolve(res)
+                const indexHtmlUrl = `http://${hostname}/${res.data.key}`
+                cdnManager.refreshUrls([indexHtmlUrl], (err, respBody, respInfo) => {
+                  if (err) {
+                    logger(err)
+                    throw err
+                  }
+                  if (respInfo.statusCode == 200) {
+                    logger(respInfo)
+                    resolve(res)
+                  } else {
+                    throw respInfo
+                  }
+                })
               })
               .catch((err) => {
                 reject(err)
