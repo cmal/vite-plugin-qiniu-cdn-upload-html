@@ -1,6 +1,6 @@
 {
     "name": "@zyzy5730_gmail/vite-plugin-qiniu-cdn-upload-html",
-    "version": "1.1.10",
+    "version": "1.1.11",
     "description": "基于 vite 的打包 index.html 文件上传到七牛云的插件",
     "author": "ryan-liu",
     "main": "dist/index.js",
@@ -19,7 +19,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/cmal/vite-plugin-qiniu-cdn-upload"
+        "url": "git+https://github.com/cmal/vite-plugin-qiniu-cdn-upload-html"
     },
     "devDependencies": {
         "@ryan-liu/eslint-config-jsx-config": "^1.0.2",
