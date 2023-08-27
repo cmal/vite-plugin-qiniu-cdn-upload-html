@@ -38,7 +38,7 @@ enum StatusCode {
 function print(isPrint: boolean) {
   return function (message: any) {
     if (isPrint) {
-      console.log('qiniu plugin log = ', message)
+      console.log('qiniu html plugin log = ', message)
     }
   }
 }
