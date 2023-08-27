@@ -38,7 +38,7 @@ enum StatusCode {
 function print(isPrint: boolean) {
   return function (message: any) {
     if (isPrint) {
-      console.log('qiniu html plugin log = ', message)
+      console.log('#### qiniu html #### ', message)
     }
   }
 }
@@ -54,7 +54,6 @@ function getMimeType(fileName: string) {
 
 export default function qiniuHtmlPlugin(options: Options): PluginOption {
   // NOTE: 覆盖上传 index.html 并刷新缓存，前提已上传其他静态文件
-  console.log('覆盖上传 index.html 并刷新缓存，前提已上传其他静态文件')
   const {
     accessKey,
     secretKey,
@@ -83,6 +82,7 @@ export default function qiniuHtmlPlugin(options: Options): PluginOption {
   return {
     name: 'vite-plugin-qiniu-upload-html',
     async writeBundle() {
+      logger('覆盖上传 index.html 并刷新缓存，前提已上传其他静态文件')
       const files = await globby([`${distDir}/index.html`])
       const chunkedFiles = _.chunk(files, concurrent)
       await Promise.all(
@@ -145,13 +145,27 @@ export default function qiniuHtmlPlugin(options: Options): PluginOption {
                 logger(`上传成功${res.length}个文件`)
                 const indexHtmlUrl = `http://${hostname}/index.html`
                 cdnManager.refreshUrls([indexHtmlUrl], (err, respBody, respInfo) => {
+                  logger('Refreshing... ' + indexHtmlUrl)
                   if (err) {
                     logger(err)
                     throw err
                   }
                   if (respInfo.statusCode == 200) {
                     logger(respInfo)
-                    resolve(res)
+                    logger('Prefetching... ' + indexHtmlUrl)
+                    dnManager.prefetchUrls([indexHtmlUrl], (err, respBody, respInfo) => {
+                      if (err) {
+                        logger(err)
+                        throw err
+                      }
+                      if (respInfo.statusCode == 200) {
+                        logger(respInfo)
+                        resolve(res)
+                      } else {
+                        throw respInfo
+                      }
+                      
+                    })
                   } else {
                     throw respInfo
                   }
