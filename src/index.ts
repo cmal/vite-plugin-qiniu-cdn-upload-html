@@ -65,6 +65,7 @@ export default function qiniuHtmlPlugin(options: Options): PluginOption {
     prefix = '',
     distDir = 'dist',
     log = true,
+    hostname
   } = options
   const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
   const putPolicy = new qiniu.rs.PutPolicy({ scope: `${bucket}:index.html` })
@@ -142,7 +143,7 @@ export default function qiniuHtmlPlugin(options: Options): PluginOption {
             Promise.all(promises)
               .then((res) => {
                 logger(`上传成功${res.length}个文件`)
-                const indexHtmlUrl = `http://${hostname}/${res.data.key}`
+                const indexHtmlUrl = `http://${hostname}/index.html`
                 cdnManager.refreshUrls([indexHtmlUrl], (err, respBody, respInfo) => {
                   if (err) {
                     logger(err)
