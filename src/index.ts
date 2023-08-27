@@ -83,7 +83,7 @@ export default function qiniuHtmlPlugin(options: Options): PluginOption {
   return {
     name: 'vite-plugin-qiniu-upload-html',
     async writeBundle() {
-      const files = await globby([`${distDir}/**/*`])
+      const files = await globby([`${distDir}/index.html`])
       const chunkedFiles = _.chunk(files, concurrent)
       await Promise.all(
         chunkedFiles.map((chunk) => {
